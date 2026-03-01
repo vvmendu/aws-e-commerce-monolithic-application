@@ -1,0 +1,79 @@
+<%- include('partials/header', {title: title}) %>
+
+<section class="hero-section text-center">
+  <div class="container">
+    <h1>Welcome to ShopNow</h1>
+    <p>Discover amazing products at unbeatable prices</p>
+    <a href="/products" class="btn btn-warning btn-lg">Shop Now</a>
+  </div>
+</section>
+
+<div class="container py-4">
+  <% if (typeof error !== 'undefined' && error) { %>
+    <div class="alert alert-warning"><%= error %></div>
+  <% } %>
+
+  <!-- Categories -->
+  <h2 class="mb-4">Shop by Category</h2>
+  <div class="row g-3 mb-5">
+    <div class="col-6 col-md-3"><a href="/electronics" class="category-card"><i class="fas fa-laptop"></i><h5>Electronics</h5></a></div>
+    <div class="col-6 col-md-3"><a href="/household" class="category-card"><i class="fas fa-home"></i><h5>Household</h5></a></div>
+    <div class="col-6 col-md-3"><a href="/books" class="category-card"><i class="fas fa-book"></i><h5>Books</h5></a></div>
+    <div class="col-6 col-md-3"><a href="/clothing" class="category-card"><i class="fas fa-tshirt"></i><h5>Clothing</h5></a></div>
+    <div class="col-6 col-md-3"><a href="/sports" class="category-card"><i class="fas fa-dumbbell"></i><h5>Sports</h5></a></div>
+    <div class="col-6 col-md-3"><a href="/bestsellers" class="category-card"><i class="fas fa-star"></i><h5>Best Sellers</h5></a></div>
+    <div class="col-6 col-md-3"><a href="/giftcards" class="category-card"><i class="fas fa-gift"></i><h5>Gift Cards</h5></a></div>
+  </div>
+
+  <!-- Featured Products -->
+  <% if (featured && featured.length > 0) { %>
+  <h2 class="mb-4">Featured Products</h2>
+  <div class="row g-3 mb-5">
+    <% featured.forEach(product => { %>
+    <div class="col-6 col-md-3">
+      <div class="card product-card position-relative">
+        <span class="badge bg-primary product-badge">Featured</span>
+        <img src="<%= product.images && product.images[0] ? product.images[0].image_url : 'https://via.placeholder.com/300x250?text=' + encodeURIComponent(product.name) %>"
+             class="card-img-top product-card-img" alt="<%= product.name %>">
+        <div class="card-body">
+          <h6 class="card-title"><%= product.name %></h6>
+          <p class="mb-1 product-price">$<%= product.sale_price ? product.sale_price.toFixed(2) : product.price.toFixed(2) %></p>
+          <% if (product.sale_price) { %><small class="product-sale-price">$<%= product.price.toFixed(2) %></small><% } %>
+          <div class="d-flex gap-2 mt-2">
+            <a href="/products/<%= product.slug %>" class="btn btn-sm btn-outline-primary flex-fill">View</a>
+            <button class="btn btn-sm btn-add-to-cart flex-fill" onclick="addToCart(<%= product.id %>)">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+  <% } %>
+
+  <!-- Best Sellers -->
+  <% if (bestsellers && bestsellers.length > 0) { %>
+  <h2 class="mb-4">Best Sellers</h2>
+  <div class="row g-3 mb-5">
+    <% bestsellers.forEach(product => { %>
+    <div class="col-6 col-md-3">
+      <div class="card product-card position-relative">
+        <span class="badge bg-warning text-dark product-badge">Best Seller</span>
+        <img src="<%= product.images && product.images[0] ? product.images[0].image_url : 'https://via.placeholder.com/300x250?text=' + encodeURIComponent(product.name) %>"
+             class="card-img-top product-card-img" alt="<%= product.name %>">
+        <div class="card-body">
+          <h6 class="card-title"><%= product.name %></h6>
+          <p class="mb-1 product-price">$<%= product.sale_price ? product.sale_price.toFixed(2) : product.price.toFixed(2) %></p>
+          <% if (product.sale_price) { %><small class="product-sale-price">$<%= product.price.toFixed(2) %></small><% } %>
+          <div class="d-flex gap-2 mt-2">
+            <a href="/products/<%= product.slug %>" class="btn btn-sm btn-outline-primary flex-fill">View</a>
+            <button class="btn btn-sm btn-add-to-cart flex-fill" onclick="addToCart(<%= product.id %>)">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+  <% } %>
+</div>
+
+<%- include('partials/footer') %>

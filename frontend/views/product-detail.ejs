@@ -1,0 +1,77 @@
+<%- include('partials/header', {title: title}) %>
+
+<div class="container py-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item"><a href="/<%= product.category_name ? product.category_name.toLowerCase().replace(' & ', '-') : 'products' %>"><%= product.category_name %></a></li>
+      <li class="breadcrumb-item active"><%= product.name %></li>
+    </ol>
+  </nav>
+
+  <div class="row">
+    <div class="col-md-5">
+      <img src="<%= product.images && product.images[0] ? product.images[0].image_url : 'https://via.placeholder.com/500x400?text=' + encodeURIComponent(product.name) %>"
+           class="product-detail-img" alt="<%= product.name %>">
+    </div>
+    <div class="col-md-7">
+      <div class="product-detail-info">
+        <h1 class="h2"><%= product.name %></h1>
+        <% if (product.brand) { %><p class="text-muted">by <%= product.brand %></p><% } %>
+        <div class="product-rating mb-2">
+          <% for(let i=1;i<=5;i++) { %><i class="fas fa-star<%= i <= Math.round(product.rating_avg) ? '' : '-half-alt' %>"></i><% } %>
+          <span class="ms-2"><%= product.rating_avg %> (<%= product.rating_count %> reviews)</span>
+        </div>
+        <div class="mb-3">
+          <span class="product-detail-price">$<%= product.sale_price ? product.sale_price.toFixed(2) : product.price.toFixed(2) %></span>
+          <% if (product.sale_price) { %>
+            <span class="product-sale-price ms-2">$<%= product.price.toFixed(2) %></span>
+            <span class="badge bg-danger ms-2">Save $<%= (product.price - product.sale_price).toFixed(2) %></span>
+          <% } %>
+        </div>
+        <% if (product.in_stock) { %>
+          <span class="stock-status in-stock mb-3 d-block">✓ In Stock (<%= product.stock_qty %> available)</span>
+          <div class="d-flex gap-3 mb-3">
+            <input type="number" id="qty" value="1" min="1" max="<%= product.stock_qty %>" class="form-control" style="width:80px">
+            <button class="btn btn-warning btn-lg" onclick="addToCartWithQty(<%= product.id %>)">
+              <i class="fas fa-cart-plus me-2"></i>Add to Cart
+            </button>
+          </div>
+        <% } else { %>
+          <span class="stock-status out-of-stock mb-3 d-block">Out of Stock</span>
+        <% } %>
+        <h5>Description</h5>
+        <p><%= product.description %></p>
+        <% if (product.sku) { %><p class="text-muted small">SKU: <%= product.sku %></p><% } %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Related Products -->
+  <% if (relatedProducts && relatedProducts.length > 0) { %>
+  <h3 class="mt-5 mb-4">Related Products</h3>
+  <div class="row g-3">
+    <% relatedProducts.forEach(p => { %>
+    <div class="col-6 col-md-3">
+      <div class="card product-card">
+        <img src="<%= p.images && p.images[0] ? p.images[0].image_url : 'https://via.placeholder.com/300x200?text=' + encodeURIComponent(p.name) %>"
+             class="card-img-top product-card-img" alt="<%= p.name %>">
+        <div class="card-body">
+          <h6 class="card-title"><%= p.name %></h6>
+          <p class="product-price">$<%= p.sale_price ? p.sale_price.toFixed(2) : p.price.toFixed(2) %></p>
+          <a href="/products/<%= p.slug %>" class="btn btn-sm btn-outline-primary w-100">View</a>
+        </div>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+  <% } %>
+</div>
+
+<script>
+function addToCartWithQty(productId) {
+  const qty = document.getElementById('qty').value;
+  addToCart(productId, parseInt(qty));
+}
+</script>
+<%- include('partials/footer') %>
